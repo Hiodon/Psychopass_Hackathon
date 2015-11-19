@@ -1,0 +1,219 @@
+\documentclass{tufte-handout}
+\usepackage{graphicx}
+
+\title{Hackathon Hacking EDU Psychopass Project}
+
+\author[The Academy]{Ilya Michurin}
+
+%\date{28 March 2010} % without \date command, current date is supplied
+
+%\geometry{showframe} % display margins for debugging page layout
+
+\usepackage{graphicx} % allow embedded images
+  \setkeys{Gin}{width=\linewidth,totalheight=\textheight,keepaspectratio}
+  \graphicspath{{graphics/}} % set of paths to search for images
+\usepackage{amsmath}  % extended mathematics
+\usepackage{booktabs} % book-quality tables
+\usepackage{units}    % non-stacked fractions and better unit spacing
+\usepackage{multicol} % multiple column layout facilities
+\usepackage{lipsum}   % filler text
+\usepackage{fancyvrb} % extended verbatim environments
+  \fvset{fontsize=\normalsize}% default font size for fancy-verbatim environments
+  
+  
+  
+    %MADNESS
+  
+  \usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm} % Math packages
+\usepackage{mathtools}% http://ctan.org/pkg/mathtools
+\usepackage{etoolbox}% http://ctan.org/pkg/etoolbox
+\usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+\usepackage{units}% To use \nicefrac
+\usepackage{cancel}% To use \cancel
+%\usepackage{physymb}%To use r
+\usepackage{sectsty} % Allows customizing section commands
+\usepackage[dvipsnames]{xcolor}
+\usepackage{pgf,tikz}%To draw 
+\usepackage{pgfplots}%To draw 
+\usetikzlibrary{shapes,arrows}%To draw 
+\usetikzlibrary{patterns,fadings}
+ \usetikzlibrary{decorations.pathreplacing}%To draw curly braces 
+ \usetikzlibrary{snakes}%To draw 
+ \usetikzlibrary{spy}%To do zoom-in
+ \usepackage{setspace}%Set margins and such
+ %\usepackage{3dplot}%To draw in 3D
+\usepackage{framed}%To get shade behind text
+
+
+
+\definecolor{shadecolor}{rgb}{0.9,0.9,0.9}%setting shade color
+\allsectionsfont{\centering \normalfont\scshape} % Make all sections centered, the default font and small caps
+
+% Standardize command font styles and environments
+\newcommand{\doccmd}[1]{\texttt{\textbackslash#1}}% command name -- adds backslash automatically
+\newcommand{\docopt}[1]{\ensuremath{\langle}\textrm{\textit{#1}}\ensuremath{\rangle}}% optional command argument
+\newcommand{\docarg}[1]{\textrm{\textit{#1}}}% (required) command argument
+\newcommand{\docenv}[1]{\textsf{#1}}% environment name
+\newcommand{\docpkg}[1]{\texttt{#1}}% package name
+\newcommand{\doccls}[1]{\texttt{#1}}% document class name
+\newcommand{\docclsopt}[1]{\texttt{#1}}% document class option name
+\newenvironment{docspec}{\begin{quote}\noindent}{\end{quote}}% command specification environment
+\begin{document}
+
+\maketitle % Print the title section
+
+\begin{marginfigure}
+  \includegraphics[width=\linewidth]{psychop.jpg}
+  \label{fig:marginfig}
+\end{marginfigure}
+
+
+\normalsize
+
+
+
+\section{Main View Controller}
+Here is an example of a main code, that we created during the International contest Hacking EDU Hackathon in San-Francisco. We used Swift 2 as a platform for a work, and this project calls: "Psychopass". It analyzes the habit of a person by answering of simple question in the program, as an output you get the analyzed information, as a provider of the best place for you to study and which subjects match for you the best.
+We developed a system that recommends a college based on personal phycological characteristics.
+
+\section{Inspiration}
+College search process is extremely complex. It requires many factors to be considered. One of of the most important ones is how a person matches college community.
+
+
+
+\normalsize
+
+\marginnote[70pt]{\large{}}
+
+
+\begin{framed}
+\begin{verbatim}
+import UIKit
+
+class MainViewController: UIViewController, 
+UITextViewDelegate {
+    
+    @IBOutlet weak var mainTextView: DesignableTextView?
+    
+    var userText: String = ""
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Do any additional setup after loading the view, 
+        typically from a nib.
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.mainTextView?.becomeFirstResponder()
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    private func checkInput(text: String) -> Bool {
+        
+        // check the count
+        if self.mainTextView?.text!.isEmpty == true {
+            return false
+        }
+        
+        let whiteChars = 
+        = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+        
+        // check for whitespaces
+        if text.stringByTrimmingCharactersInSet(whiteChars) 
+        == "" {
+            return false
+        }
+        
+        
+        return true
+    }
+    
+    
+    private func showAlert(text: String) {
+        let alert = UIAlertController(title: "Warning!", 
+        message: text, 
+        preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Ok", 
+        style: UIAlertActionStyle.Default, handler:
+            {(_) in
+                dispatch_async(dispatch_get_main_queue()) 
+                
+                {self.mainTextView?.becomeFirstResponder()}
+        }) )
+        
+        self.presentViewController(alert, animated: true, 
+        completion: nil)
+    }
+    
+    
+    @IBAction func MainButtonPressed(sender: AnyObject) {
+        
+        guard self.checkInput(self.mainTextView!.text) 
+        else {
+            showAlert("Please type your text")
+            return
+        }
+        
+        self.userText = (self.mainTextView?.text)!
+        
+        //send data to server...
+    }
+}
+\end{verbatim}
+\end{framed}
+
+
+
+
+
+\section{My Personal Work}
+Working on a code was not my main perspective, otherwise it was a style of this program. All the bars, windows are created by me with a help of Dmitriy Sobolev. I know that it was not the most difficult part, but it look pretty simple and catches the eye.
+
+\bibliography{sample-handout}
+\bibliographystyle{plainnat}
+
+
+\begin{shaded}
+\begin{verbatim}
+
+As the result, this code works as a main view controller, 
+
+that renders the information, that programm recieves,
+
+during all the command, 
+
+also one of the features is an analyzing of all entire 
+
+information 
+
+that passes through the program.
+
+\end{verbatim}
+\end{shaded}
+
+
+
+\vspace{1cm}
+
+
+
+
+
+
+\end{document}
+
+
+
+
+
